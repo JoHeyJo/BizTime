@@ -1,10 +1,8 @@
 "use strict"
 
-// const { request, json } = require("express");
 const express = require("express");
 const db = require("../db");
 const { NotFoundError } = require("../expressError.js");
-// const Item = require("./item")
 const router = new express.Router();
 
 /** GET /companies: get list of companies */
@@ -20,7 +18,6 @@ router.get("/", async function (req, res) {
 // /** GET /company/:name: return single company */
 router.get("/:code", async function (req, res) {
   let code = req.params.code
-  console.log(code)
   const results = await db.query(
     `SELECT code, name, description
     FROM companies
@@ -68,15 +65,15 @@ router.put("/:code", async function (req, res) {
 // /** DELETE /companies/:code delete single company */
 router.delete("/:code", async function (req, res) {
   const code = req.params.code
-  console.log(code,'<<<<<<<<<<<<<')
-  await db.query(
+ const results =  await db.query(
     `DELETE FROM companies
      WHERE code = $1
+     RETURNING code
     `,
     [code]
   );
-  // let company = results.rows[0]
-  // if (!company) throw new NotFoundError(`Not found ${code}`);
+  let company = results.rows[0]
+  if (!company) throw new NotFoundError(`Not found ${code}`);
   return res.json({ status: `DELETED ${code}` });
 });
 
