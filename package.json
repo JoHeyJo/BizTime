@@ -1,0 +1,26 @@
+{
+  "name": "express-biztime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoHeyJo/BizTime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoHeyJo/BizTime/issues"
+  },
+  "homepage": "https://github.com/JoHeyJo/BizTime#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "express": "^5.0.0-alpha.8",
+    "pg": "^8.7.3"
+  }
+}
