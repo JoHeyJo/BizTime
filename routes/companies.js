@@ -17,17 +17,29 @@ router.get("/", async function (req, res) {
 
 // /** GET /company/:name: return single company */
 router.get("/:code", async function (req, res) {
-  let code = req.params.code
+  let companyCode = req.params.code
   const results = await db.query(
-    `SELECT code, name, description
-    FROM companies
-    WHERE code = $1
+    `SELECT c.code, c.name, c.description, i.id, i.amt, i.paid, i.add_date, i.paid_date
+    FROM companies as c
+    JOIN invoices as i
+    ON c.code = i.comp_code
+    WHERE c.code = $1
     `,
-    [code]
+    [companyCode]
   );
-  let company = results.rows[0]
+  let company = results.rows
+  let { code, name, description } = results.rows[0]
+  let invoices = results.rows.map((row) => {
+    return row.id
+  });
+  let response = {
+    code,
+    name,
+    description,
+    invoices
+  }
   if (!company) throw new NotFoundError(`Not found ${code}`);
-  return res.json({ company });
+  return res.json({ response });
 });
 
 // /** POST /company/ create single company */
@@ -65,7 +77,7 @@ router.put("/:code", async function (req, res) {
 // /** DELETE /companies/:code delete single company */
 router.delete("/:code", async function (req, res) {
   const code = req.params.code
- const results =  await db.query(
+  const results = await db.query(
     `DELETE FROM companies
      WHERE code = $1
      RETURNING code

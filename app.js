@@ -4,6 +4,7 @@ const express = require("express");
 const { NotFoundError } = require("./expressError");
 
 const companiesRoutes = require("./routes/companies")
+const invoicesRoutes = require("./routes/invoices")
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use("/companies", companiesRoutes)
 
+app.use("/invoices", invoicesRoutes)
 
 app.get("/", function (req, res, next) {
   return res.send("Company stuff")
