@@ -27,30 +27,34 @@ router.get("/", async function (req, res) {
 router.get("/:id", async function (req, res) {
     let invoiceId = req.params.id
     const results = await db.query(
-        `SELECT id, amt, paid, add_date, paid_date
+        `SELECT id, amt, paid, add_date, paid_date, name, code, description
         FROM invoices
+        JOIN companies
+        ON invoices.comp_code = companies.code
         WHERE id = $1
         `, [invoiceId]
     );
-    const comp_code_results = await db.query(
-        `SELECT comp_code
-        FROM invoices
-        WHERE id = $1
-        `, [invoiceId]
-    );
+    // const comp_code_results = await db.query(
+    //     `SELECT comp_code
+    //     FROM invoices
+    //     WHERE id = $1
+    //     `, [invoiceId]
+    // );
 
-    let comp_code = comp_code_results.rows[0].comp_code
-    const company_result = await db.query(
-        `SELECT code, name, description
-        FROM companies
-        WHERE code = $1
-        `, [comp_code]
-    );
-    let company = company_result.rows[0]
+    // let comp_code = comp_code_results.rows[0].comp_code
+    // const company_result = await db.query(
+    //     `SELECT code, name, description
+    //     FROM companies
+    //     WHERE code = $1
+    //     `, [comp_code]
+    // );
+    // let company = company_result.rows[0]
     let invoice = results.rows[0]
+    let { id, amt, paid, add_date, paid_date, name, description, code } = invoice
     if (!invoice) throw new NotFoundError(`Not found ${invoiceId}`);
-    invoice.company = company
-    return res.json({ invoice });
+    // invoice.company = company
+    return res.json({ invoice: { id, amt, paid, add_date, paid_date, 
+                        company: { name, description, code }}});
 });
 
 // /** POST /invoice/ create single invoice */

@@ -18,6 +18,7 @@ router.get("/", async function (req, res) {
 // /** GET /company/:name: return single company */
 router.get("/:code", async function (req, res) {
   let companyCode = req.params.code
+  console.log(companyCode,'<<<<<<<<<<<<<<<<')
   const results = await db.query(
     `SELECT c.code, c.name, c.description, i.id, i.amt, i.paid, i.add_date, i.paid_date
     FROM companies as c
@@ -27,7 +28,9 @@ router.get("/:code", async function (req, res) {
     `,
     [companyCode]
   );
+  if(!results.rows) throw new NotFoundError('No invoice found')
   let company = results.rows
+  console.log(results)
   let { code, name, description } = results.rows[0]
   let invoices = results.rows.map((row) => {
     return row.id
